@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">ProyectoAB</string>
+    <string name="titulo_principal">Albacete BP Squad</string>
+    <string name="boton_ver_ficha">View Profile</string>
+    <string name="boton_saber_mas">Learn More</string>
+    <string name="detalle_jugador_titulo">Player Profile</string>
+    <string name="posicion_portero">Goalkeeper</string>
+    <string name="posicion_defensa">Defender</string>
+    <string name="posicion_centrocampista">Midfielder</string>
+    <string name="posicion_delantero">Forward</string>
+    <!-- Nuevas cadenas para la pantalla de inicio -->
+    <string name="titulo_inicio">Albacete Balompie</string>
+    <string name="descripcion_inicio">Founded in 1923. Club in Segunda División</string>
+    <string name="anio_fundacion">Founded: 1923</string>
+    <string name="numero_socios">Members: 8,500</string>
+    <string name="nombre_estadio">Stadium: Carlos Belmonte</string>
+    <string name="boton_ver_plantilla">View Squad</string>
+</resources>

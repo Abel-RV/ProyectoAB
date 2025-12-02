@@ -1,0 +1,19 @@
+<resources>
+    <string name="app_name">ProyectoAB</string>
+    <string name="titulo_principal">Plantilla Albacete BP</string>
+    <string name="boton_ver_ficha">Ver Perfil</string>
+    <string name="boton_saber_mas">Saber Más</string>
+    <string name="detalle_jugador_titulo">Ficha del Jugador</string>
+    <string name="titulo_inicio">Albacete Balompie</string>
+    <string name="descripcion_inicio">Founded in 1923. Club in Segunda División</string>
+    <string name="anio_fundacion">Founded: 1923</string>
+    <string name="numero_socios">Members: 8,500</string>
+    <string name="nombre_estadio">Stadium: Carlos Belmonte</string>
+    <string name="boton_ver_plantilla">View Squad</string>
+
+    <!-- Posiciones - Usadas por la función toLocalizedString() -->
+    <string name="posicion_portero">Portero</string>
+    <string name="posicion_defensa">Defensa</string>
+    <string name="posicion_centrocampista">Centrocampista</string>
+    <string name="posicion_delantero">Delantero</string>
+</resources>
