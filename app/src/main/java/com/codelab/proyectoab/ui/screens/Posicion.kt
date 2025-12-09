@@ -1,9 +1,12 @@
 package com.codelab.proyectoab.ui.screens
 
+import android.os.Parcelable
 import androidx.compose.material.icons.Icons
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.stringResource
 import com.codelab.proyectoab.R
+import kotlinx.parcelize.Parcelize
+import kotlinx.parcelize.RawValue
 
 enum class Posicion {
     PORTERO,
@@ -12,6 +15,7 @@ enum class Posicion {
     DELANTERO
 }
 
+@Parcelize
 data class Jugador(
     val id: Int,
     val nombre: String,
@@ -25,10 +29,10 @@ data class Jugador(
     val goles: Int,
     val asistencias: Int,
     val partidos: Int,
-    val icono: ImageVector,
+    val icono: @RawValue ImageVector,
     val urlPerfil: String,
     val imagenId: Int
-)
+): Parcelable
 
 @androidx.compose.runtime.Composable
 fun Posicion.toLocalizedString(): String {
