@@ -2,13 +2,17 @@ package com.codelab.proyectoab.ui.screens
 
 import android.content.Intent
 import android.content.SharedPreferences
+import android.net.Uri
 import android.widget.Toast
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Button
 import androidx.compose.material3.Text
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.Switch
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -19,14 +23,14 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.style.TextIndent
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.codelab.proyectoab.MainActivity
 import com.codelab.proyectoab.R
+import com.codelab.proyectoab.ui.resources.botonContactos
+import com.codelab.proyectoab.ui.resources.ingresarNombre
 import com.codelab.proyectoab.ui.segundoActivity.SeleccionaJugadorActivity
-import java.nio.file.WatchEvent
-import java.util.jar.Manifest
 
 @Composable
 fun InicioScreen(
@@ -34,57 +38,16 @@ fun InicioScreen(
     prefs: SharedPreferences
 ) {
     val temaOscuro = prefs.getBoolean(MainActivity.CLAVE_TEMA_OSCURO, false)
-    val nombreGuardado =prefs.getString(MainActivity.CLAVE_NOMBRE_USUARIO,"")?:""
-    var nombreTemporal by remember { mutableStateOf(nombreGuardado) }
-    var nombreGuardadoAlgunaVez by remember {
-        mutableStateOf(nombreGuardado.isNotEmpty())
-    }
     val context = LocalContext.current
 
     Column(
         modifier = Modifier
-            .fillMaxWidth()
-            .padding(horizontal = 24.dp, vertical = 50.dp),
+            .fillMaxSize()
+            .padding(horizontal = 24.dp, vertical = 16.dp)
+            .verticalScroll(rememberScrollState()),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        if (!nombreGuardadoAlgunaVez) {
-            // Estado: pedir nombre
-            OutlinedTextField(
-                value = nombreTemporal,
-                onValueChange = { nombreTemporal = it },
-                label = { Text("Tu nombre") },
-                modifier = Modifier.fillMaxWidth()
-            )
-            Spacer(Modifier.height(8.dp))
-            Button(
-                onClick = {
-                    if (nombreTemporal.isNotBlank()) {
-                        prefs.edit()
-                            .putString(MainActivity.CLAVE_NOMBRE_USUARIO, nombreTemporal.trim())
-                            .apply()
-                        nombreGuardadoAlgunaVez = true
-                    }
-                },
-                enabled = nombreTemporal.isNotBlank(),
-                modifier = Modifier.fillMaxWidth()
-            ) {
-                Text("Guardar nombre")
-            }
-        } else {
-            // Estado: saludo
-            Text("¡Hola, $nombreTemporal!", style = MaterialTheme.typography.headlineMedium)
-            Spacer(Modifier.height(32.dp))
-            Button(
-                onClick = {
-                    prefs.edit().remove(MainActivity.CLAVE_NOMBRE_USUARIO).apply()
-                    nombreTemporal = ""
-                    nombreGuardadoAlgunaVez = false
-                },
-                modifier = Modifier.fillMaxWidth()
-            ) {
-                Text("Cambiar nombre")
-            }
-        }
+        ingresarNombre(prefs, soloSaludo = true)
         Image(
             modifier = Modifier.height(120.dp).width(120.dp),
             painter = painterResource(R.drawable.albacete_balompie),
@@ -118,59 +81,73 @@ fun InicioScreen(
 
         Spacer(modifier = Modifier.height(16.dp))
 
-        // Modo claro
+        Switch(
+            checked = temaOscuro,
+            onCheckedChange = { isChecked ->
+                prefs.edit().putBoolean(MainActivity.CLAVE_TEMA_OSCURO, isChecked).apply()
+                (context as MainActivity).recreate()
+            }
+        )
+
+        Spacer(modifier = Modifier.height(16.dp))
+
         Button(
             onClick = {
-                prefs.edit().putBoolean(MainActivity.CLAVE_TEMA_OSCURO, false).apply()
+                prefs.edit().clear().apply()
                 (navController.context as MainActivity).recreate()
             },
             modifier = Modifier.fillMaxWidth().height(48.dp)
         ) {
-            Text("Modo Claro")
+            Text("Borrar datos")
         }
 
-        Spacer(modifier = Modifier.height(8.dp))
+        Spacer(modifier = Modifier.height(16.dp))
 
-        // Modo oscuro
         Button(
             onClick = {
-                prefs.edit().putBoolean(MainActivity.CLAVE_TEMA_OSCURO, true).apply()
-                (navController.context as MainActivity).recreate()
+                val intent = Intent(Intent.ACTION_DIAL, Uri.parse("tel:+34642636747"))
+                if (intent.resolveActivity(context.packageManager) != null) {
+                    context.startActivity(intent)
+                } else {
+                    Toast.makeText(context, "No hay app de teléfono", Toast.LENGTH_SHORT).show()
+                }
             },
-            modifier = Modifier.fillMaxWidth().height(48.dp)
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(48.dp)
         ) {
-            Text("Modo Oscuro")
+            Text(
+                text = "Llamar a Jarún",
+                textAlign = TextAlign.Center
+            )
         }
 
         Spacer(modifier = Modifier.height(12.dp))
 
-        Text(
-            text = if (temaOscuro) "Modo: OSCURO" else "Modo: CLARO",
-            style = MaterialTheme.typography.bodySmall,
-            color = MaterialTheme.colorScheme.onSurface
-        )
-
         Button(
             onClick = {
-                val intent = Intent(context, SeleccionaJugadorActivity::class.java)
-                (context as MainActivity).seleccionJugadorLauncher.launch(intent)
-            }, modifier = Modifier.fillMaxWidth()
-        ) {
-            Text("Seleccionar jugador")
-        }
-
-        Button(
-            onClick = {
-                val activity = navController.context as MainActivity
-                if(activity.usuarioTienePermisoContactos()){
-                    Toast.makeText(activity,"Mostrando contactos...", Toast.LENGTH_SHORT)
-                }else{
-                    activity.solicitarPermisoContactos()
+                val uri = Uri.parse("geo:38.9986,-1.8672?q=Estadio+Carlos+Belmonte")
+                val intent = Intent(Intent.ACTION_VIEW, uri)
+                if (intent.resolveActivity(context.packageManager) != null) {
+                    context.startActivity(intent)
+                } else {
+                    // Fallback a navegador
+                    context.startActivity(
+                        Intent(
+                            Intent.ACTION_VIEW,
+                            Uri.parse("https://maps.google.com/?q=38.9986,-1.8672")
+                        )
+                    )
                 }
             },
-            modifier = Modifier.fillMaxWidth()
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(48.dp)
         ) {
-            Text("Ver contactos del sistema")
+            Text(
+                text = "Ver estadio en el mapa",
+                textAlign = TextAlign.Center
+            )
         }
     }
 }

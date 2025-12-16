@@ -11,10 +11,17 @@ import com.codelab.proyectoab.ui.screens.DetalleJugadorScreen
 import com.codelab.proyectoab.ui.screens.InicioScreen
 import com.codelab.proyectoab.ui.screens.PlantillaScreen
 import androidx.compose.material3.Text
+import androidx.compose.runtime.LaunchedEffect
 
 @Composable
-fun MainScreen(prefs: SharedPreferences) {
+fun MainScreen(prefs: SharedPreferences, initialJugadorId:Int=-1) {
     val navController = rememberNavController()
+    LaunchedEffect(initialJugadorId) {
+        if(initialJugadorId!=-1){
+            navController.navigate("detalle_jugador/$initialJugadorId")
+
+        }
+    }
 
     NavHost(
         navController = navController,
