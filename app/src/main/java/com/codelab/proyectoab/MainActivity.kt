@@ -240,6 +240,17 @@ class MainActivity : ComponentActivity() {
                 }*/
                 AppRoot(prefs = prefs, initialJugadorId = jugadorIdParaRestaurar)
             }
+            val data = intent?.data
+            val jugadorIdDesdeDeepLink= data?.let { uri->
+                if(uri.host=="www.albacetebalompie.es"&& uri.path?.startsWith("/jugadores/")==true){
+                    uri.lastPathSegment?.toIntOrNull()?:-1
+                }else{
+                    -1
+                }
+            }?:-1
+            if (jugadorIdParaRestaurar == -1 && jugadorIdDesdeDeepLink != -1) {
+                jugadorIdParaRestaurar = jugadorIdDesdeDeepLink
+            }
         }
     }
 }
